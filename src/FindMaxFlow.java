@@ -1,8 +1,6 @@
 /*Student ID : w1761890
 * Student Name : Tharindu De Silva
-* */
-
-
+*/
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +11,7 @@ public class FindMaxFlow {
     private int vertexCount; // Store the number of nodes
     private int sink = vertexCount - 1; // Store the target
     private Scanner sc = new Scanner(System.in);
-    private Graph graph;
+    private Graph graph; // Graph object to store data
 
     public static void main(String[] args) {
         FindMaxFlow findMaxFlow = new FindMaxFlow();
@@ -29,7 +27,7 @@ public class FindMaxFlow {
 
         //visit source
         queue.add(source);
-        visited[source] = true;
+        visited[source] = true; // Setting source as visited
         parent[source] = 0;
 
         //loop through all vertices
@@ -40,7 +38,7 @@ public class FindMaxFlow {
                 // if not visited and positive value then visit
                 if ((!visited[j]) && (residualGraph.getAdjacent()[i][j] > 0)) {
                     queue.add(j);
-                    visited[j] = true;
+                    visited[j] = true; // Set visited node as true
                     parent[j] = i;
                 }
             }
@@ -58,11 +56,11 @@ public class FindMaxFlow {
             return 0;
         }
 
-        // create residual graph
+        // Creating the residual graph
         Graph residualGraph = new Graph(vertexCount);
         for (int i = 0; i < vertexCount; i++) {
             for (int j = 0; j < vertexCount; j++) {
-                residualGraph.getAdjacent()[i][j] = graph.getAdjacent()[i][j]; //map the original graph to the residual graph
+                residualGraph.getAdjacent()[i][j] = graph.getAdjacent()[i][j]; // Mapping the original graph to the residual graph
             }
         }
 
@@ -148,23 +146,23 @@ public class FindMaxFlow {
 
     private void readFile(String fileName) {
         try {
-            int lineCount = 0;
+            int lineCount = 0; // to track the line count
             File file = new File(fileName);
             Scanner myReader = new Scanner(file);
             while (myReader.hasNextLine()) {
                 String line = myReader.nextLine();
-                if (lineCount == 0) {
-                    String[] details = line.split(" ");
-                    vertexCount = Integer.parseInt(details[0]);
-                    sink = vertexCount - 1;
-                    graph = new Graph(vertexCount);
+                if (lineCount == 0) { // If the line count is 0 then the value will taken as the number of nodes
+                    String[] details = line.split(" "); // split the values by space
+                    vertexCount = Integer.parseInt(details[0]); // getting the value from the array
+                    sink = vertexCount - 1; // Calculating the sink value based on vertex count
+                    graph = new Graph(vertexCount); // Creating a graph object with read data
                 } else {
                     String[] details = line.split(" ");
-                    int node1 = Integer.parseInt(details[0]);
-                    int node2 = Integer.parseInt(details[1]);
-                    int weight = Integer.parseInt(details[2]);
+                    int node1 = Integer.parseInt(details[0]); // Adding a node
+                    int node2 = Integer.parseInt(details[1]); // Adding a node
+                    int weight = Integer.parseInt(details[2]); // Adding the capacity
 
-                    graph.addEdge(node1, node2, weight);
+                    graph.addEdge(node1, node2, weight); // Adding data to the graph object
                 }
                 lineCount++;
             }
@@ -175,23 +173,21 @@ public class FindMaxFlow {
     }
 
     public void benchMark(String filename) {
-        long start = System.currentTimeMillis();
-        readFile(filename);
-        int maxFlow = FordFulkerson(graph, source, sink);
-        long now = System.currentTimeMillis();
-        double elapsed = (now - start) / 1000.0;
-        System.out.printf("%-18s %-17s %-11s %-14s %-11s %-23s",filename.replace("datasets/",""), graph.getVertexCount(), source, sink, maxFlow, elapsed);
+        Stopwatch stopwatch = new Stopwatch();
+        readFile(filename); // reading the text file
+        int maxFlow = FordFulkerson(graph, source, sink); // Calculating the max flow
+        double elapsed = stopwatch.elapsedTime();
+        System.out.printf("%-18s %-17s %-11s %-14s %-11s %-23s",filename.replace("datasets/",""), graph.getVertexCount(), source, sink, maxFlow, elapsed  * 1000.00);
         System.out.println("");
     }
 
     public void findMaxFlow(String filename) {
-        long start = System.currentTimeMillis();
+        Stopwatch stopwatch = new Stopwatch();
         readFile(filename);
         System.out.println("Number of Nodes : " + graph.getVertexCount() + "  ||  " + "Source : " + source + "  ||  " + "Sink : " + sink);
         System.out.println("\nCalculated Max-Flow is: " + FordFulkersonWithPath(graph, source, sink) + "\n");
-        long now = System.currentTimeMillis();
-        double elapsed = (now - start) / 1000.0;
-        System.out.println("Elapsed time : " + elapsed);
+        double time = stopwatch.elapsedTime();
+        System.out.println("Elapsed time : " + time * 1000);
 
     }
 
